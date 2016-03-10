@@ -19,9 +19,16 @@
                              #f
                              read-json))
 
-  (define (send-message token user message)
+  (define (send-message token chat-id text)
     (with-input-from-request (get-query-url token "sendMessage")
-                             (list (cons 'chat_id user)
-                                   (cons 'text    message))
+                             (list (cons 'chat_id chat-id)
+                                   (cons 'text    text))
+                             read-json))
+
+  (define (forward-message token chat-id from-chat-id message-id)
+    (with-input-from-request (get-query-url token "forwardMessage")
+                             (list (cons 'chat_id      chat-id)
+                                   (cons 'from_chat_id from-chat-id)
+                                   (cons 'message_id   message-id))
                              read-json))
 )
