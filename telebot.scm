@@ -1,7 +1,8 @@
 (module telebot (getMe
                  getUpdates
                  sendMessage
-                 forwardMessage)
+                 forwardMessage
+                 getUserProfilePhotos)
   (import chicken scheme)
   (use srfi-1)
   (use openssl)
@@ -54,4 +55,8 @@
                                   from_chat_id
                                   message_id
                                   disable_notification))
+
+  (wrap-api-method getUserProfilePhotos(user_id
+                                        offset
+                                        limit))
 )
