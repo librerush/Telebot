@@ -1,6 +1,7 @@
 (module telebot (getMe
                  getUpdates
                  sendMessage
+                 sendChatAction
                  forwardMessage
                  getUserProfilePhotos)
   (import chicken scheme)
@@ -50,6 +51,8 @@
                                disable_notification
                                reply_to_message_id
                                reply_markup))
+
+  (wrap-api-method sendChatAction(chat_id action))
 
   (wrap-api-method forwardMessage(chat_id
                                   from_chat_id
