@@ -1,7 +1,7 @@
-(module telebot (get-me
-                 get-updates
-                 send-message
-                 forward-message)
+(module telebot (getMe
+                 getUpdates
+                 sendMessage
+                 forwardMessage)
   (import chicken scheme)
   (use srfi-1)
   (use openssl)
@@ -24,53 +24,34 @@
 
   ;;; plain API wrappers, returning deserialized JSON
 
-  (define (get-me token)
-    (with-input-from-request (get-query-url token "getMe")
-                             #f
-                             read-json))
+  (define-syntax wrap-api-method
+    (syntax-rules ()
+    ((wrap-api-method method(parameters ...))
+     (define (method
+              token
+              #!key parameters ...)
+       (with-input-from-request
+         (get-query-url token (symbol->string 'method))
+         (clean-query-parameters
+           (map (lambda (l) (cons (first l) (second l)))
+                (zip '(parameters ...)
+                     (list parameters ...))))
+         read-json)))))
 
-  (define (get-updates token
-                       #!key offset
-                             limit
-                             timeout)
-    (with-input-from-request
-      (get-query-url token "getUpdates")
-      (clean-query-parameters
-        (list (cons 'offset  offset)
-              (cons 'limit   limit)
-              (cons 'timeout timeout)))
-      read-json))
+  (wrap-api-method getMe())
 
-  (define (send-message token
-                        #!key chat-id
-                              text
-                              parse-mode
-                              disable-web-page-preview
-                              disable-notification
-                              reply-to-message-id
-                              reply-markup)
-    (with-input-from-request
-      (get-query-url token "sendMessage")
-      (clean-query-parameters
-        (list (cons 'chat_id                  chat-id)
-              (cons 'text                     text)
-              (cons 'parse_mode               parse-mode)
-              (cons 'disable_web_page_preview disable-web-page-preview)
-              (cons 'disable_notification     disable-notification)
-              (cons 'reply_to_message_id      reply-to-message-id)
-              (cons 'reply_markup             reply-markup)))
-      read-json))
+  (wrap-api-method getUpdates(offset limit timeout))
 
-  (define (forward-message token
-                           #!key chat-id
-                                 from-chat-id
-                                 message-id
-                                 disable-notification)
-    (with-input-from-request
-      (get-query-url token "forwardMessage")
-      (list (cons 'chat_id              chat-id)
-            (cons 'from_chat_id         from-chat-id)
-            (cons 'message_id           message-id)
-            (cons 'disable_notification disable-notification))
-      read-json))
+  (wrap-api-method sendMessage(chat_id
+                               text
+                               parse_mode
+                               disable_web_page_preview
+                               disable_notification
+                               reply_to_message_id
+                               reply_markup))
+
+  (wrap-api-method forwardMessage(chat_id
+                                  from_chat_id
+                                  message_id
+                                  disable_notification))
 )

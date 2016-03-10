@@ -31,4 +31,4 @@
                            (cdr (resolve-query (list 'update_id) u))
                            ")"))
                   (resolve-query (list 'result)
-                                 (telebot:get-updates token)))
+                                 (telebot:getUpdates token)))
