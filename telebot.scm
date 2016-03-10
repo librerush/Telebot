@@ -1,6 +1,7 @@
 (module telebot (getMe
                  getUpdates
                  sendMessage
+                 sendLocation
                  sendChatAction
                  forwardMessage
                  getUserProfilePhotos)
@@ -51,6 +52,13 @@
                                disable_notification
                                reply_to_message_id
                                reply_markup))
+
+  (wrap-api-method sendLocation(chat_id
+                                latitude
+                                longitude
+                                disable_notification
+                                reply_to_message_id
+                                reply_markup))
 
   (wrap-api-method sendChatAction(chat_id action))
 
