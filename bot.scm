@@ -31,13 +31,11 @@
          ")"))
 
 (define (echo-message msg)
-  (let ((chat_id    (resolve-query (list 'message 'from 'id)   msg))
-        (text       (resolve-query (list 'message 'text)       msg))
-        (message_id (resolve-query (list 'message 'message_id) msg)))
+  (let ((chat_id    (resolve-query (list 'message 'from 'id) msg))
+        (text       (resolve-query (list 'message 'text)     msg)))
     (telebot:sendMessage token
-                         chat_id:             chat_id
-                         text:                text
-                         reply_to_message_id: message_id)))
+                         chat_id: chat_id
+                         text:    text)))
 
 (do-forever
   (updates-for-each (lambda (u)
