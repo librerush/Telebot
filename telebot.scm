@@ -11,7 +11,7 @@
   (use http-client)
   (use medea)
 
-  (define api-base "https://api.telegram.org/bot")
+  (define-constant api-base "https://api.telegram.org/bot")
 
   ;;; helper functions
 

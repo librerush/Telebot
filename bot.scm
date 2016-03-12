@@ -5,15 +5,10 @@
 (use vector-lib)
 (use data-structures)
 
-(define (assure-list value)
-  (if (list? value)
-    value
-    (list)))
-
 (define (resolve-query query tree)
-  (fold-right (lambda (x y) (alist-ref x (assure-list y)))
-              tree
-              (reverse query)))
+  (fold (lambda (x y) (alist-ref x y))
+        tree
+        query))
 
 (define (updates-for-each func updates)
   (vector-for-each (lambda (i u) (func u))
@@ -23,16 +18,16 @@
 (define token (car (command-line-arguments)))
 
 (define (print-message msg)
-  (print (resolve-query (list 'message 'from 'first_name) msg)
+  (print (resolve-query '(message from first_name) msg)
          ": "
-         (resolve-query (list 'message 'text) msg)
+         (resolve-query '(message text) msg)
          " ("
-         (resolve-query (list 'update_id) msg)
+         (resolve-query '(update_id) msg)
          ")"))
 
 (define (echo-message msg)
-  (let ((chat_id    (resolve-query (list 'message 'from 'id) msg))
-        (text       (resolve-query (list 'message 'text)     msg)))
+  (let ((chat_id    (resolve-query '(message from id) msg))
+        (text       (resolve-query '(message text)    msg)))
     (telebot:sendMessage token
                          chat_id: chat_id
                          text:    text)))
@@ -42,8 +37,8 @@
                       (begin (print-message u)
                              (echo-message u)
                              (set! offset
-                               (+ 1 (resolve-query (list 'update_id) u)))))
-                    (resolve-query (list 'result)
+                               (+ 1 (resolve-query '(update_id) u)))))
+                    (resolve-query '(result)
                                    (telebot:getUpdates token
                                                        offset:  offset
                                                        timeout: 60))))
