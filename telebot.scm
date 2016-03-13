@@ -1,10 +1,17 @@
 (module telebot (getMe
                  getUpdates
                  sendMessage
+                 forwardMessage
+                 sendPhoto
+                 sendAudio
+                 sendDocument
+                 sendSticker
+                 sendVideo
+                 sendVoice
                  sendLocation
                  sendChatAction
-                 forwardMessage
                  getUserProfilePhotos
+                 getFile
                  pollUpdates)
   (import chicken scheme)
   (use srfi-1)
@@ -56,6 +63,57 @@
                                reply_to_message_id
                                reply_markup))
 
+  (wrap-api-method forwardMessage(chat_id
+                                  from_chat_id
+                                  message_id
+                                  disable_notification))
+
+  (wrap-api-method sendPhoto(chat_id
+                             photo
+                             caption
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
+  (wrap-api-method sendAudio(chat_id
+                             audio
+                             duration
+                             performer
+                             title
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
+  (wrap-api-method sendDocument(chat_id
+                                document
+                                caption
+                                disable_notification
+                                reply_to_message_id
+                                reply_markup))
+
+  (wrap-api-method sendSticker(chat_id
+                               sticker
+                               disable_notification
+                               reply_to_message_id
+                               reply_markup))
+
+  (wrap-api-method sendVideo(chat_id
+                             video
+                             duration
+                             width
+                             height
+                             caption
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
+  (wrap-api-method sendVoice(chat_id
+                             voice
+                             duration
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
   (wrap-api-method sendLocation(chat_id
                                 latitude
                                 longitude
@@ -65,14 +123,11 @@
 
   (wrap-api-method sendChatAction(chat_id action))
 
-  (wrap-api-method forwardMessage(chat_id
-                                  from_chat_id
-                                  message_id
-                                  disable_notification))
-
   (wrap-api-method getUserProfilePhotos(user_id
                                         offset
                                         limit))
+
+  (wrap-api-method getFile(file_id))
 
   ;;; framework
 
