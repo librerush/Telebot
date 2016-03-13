@@ -4,12 +4,15 @@
                  sendLocation
                  sendChatAction
                  forwardMessage
-                 getUserProfilePhotos)
+                 getUserProfilePhotos
+                 pollUpdates)
   (import chicken scheme)
   (use srfi-1)
   (use openssl)
   (use http-client)
   (use medea)
+  (use loops)
+  (use vector-lib)
 
   (define-constant api-base "https://api.telegram.org/bot")
 
@@ -70,4 +73,17 @@
   (wrap-api-method getUserProfilePhotos(user_id
                                         offset
                                         limit))
+
+  ;;; framework
+
+  (define (pollUpdates token handler)
+    (define offset  0)
+    (define process (lambda (i u)
+                      (begin (handler u)
+                             (set! offset (+ 1 (cdr (assv 'update_id u)))))))
+    (do-forever
+      (vector-for-each process
+                       (cdr (assv 'result (getUpdates token
+                                                      offset:  offset
+                                                      timeout: 60))))))
 )
