@@ -1,5 +1,5 @@
-(include "telebot.scm")
-(import (prefix telebot telebot:))
+(require-extension telebot
+                   (prefix telebot telebot:))
 
 (use data-structures)
 

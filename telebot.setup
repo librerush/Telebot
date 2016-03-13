@@ -1,0 +1,7 @@
+(compile -s -O2 -d1 telebot -j telebot)
+(compile -s -O2 -d0 telebot.import.scm)
+
+(install-extension
+  'telebot
+  '("telebot.so" "telebot.import.so")
+  '((version "1.0")))

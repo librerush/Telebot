@@ -1,0 +1,11 @@
+((license "MIT")
+ (category web)
+
+ (needs openssl
+        http-client
+        medea
+        loops
+        vector-lib)
+
+ (author   "Adrian Kummerländer")
+ (synopsis "Basic wrapper of the Telegram Bot API."))
