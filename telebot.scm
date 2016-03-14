@@ -38,68 +38,82 @@
   ;;; plain API wrappers, returning deserialized JSON
 
   (define-syntax wrap-api-method
-    (syntax-rules ()
-    ((wrap-api-method method(parameters ...))
-     (define (method
-              token
-              #!key parameters ...)
-       (with-input-from-request
-         (get-query-url token (symbol->string 'method))
-         (clean-query-parameters
-           (map (lambda (l) (cons (first l) (second l)))
-                (zip '(parameters ...)
-                     (list parameters ...))))
-         read-json)))))
+    (syntax-rules (required optional)
+    ((wrap-api-method method
+                      (required required_params ...)
+                      (optional optional_params ...))
+     (define (method token
+                     #!key required_params ...
+                           optional_params ...)
+       (if (any (lambda (x) (equal? #f x))
+                (list required_params ...))
+         (abort 'required-parameter-missing)
+         (with-input-from-request
+           (get-query-url token (symbol->string 'method))
+           (clean-query-parameters
+             (map (lambda (l) (cons (first l) (second l)))
+                  (zip '(required_params ... optional_params ...)
+                       (list required_params ... optional_params ...))))
+           read-json))))))
 
-  (wrap-api-method getMe())
+  (wrap-api-method getMe (required) (optional))
 
-  (wrap-api-method getUpdates(offset limit timeout))
+  (wrap-api-method getUpdates
+                   (required)
+                   (optional offset limit timeout))
 
-  (wrap-api-method sendMessage(chat_id
-                               text
-                               parse_mode
-                               disable_web_page_preview
-                               disable_notification
-                               reply_to_message_id
-                               reply_markup))
-
-  (wrap-api-method forwardMessage(chat_id
-                                  from_chat_id
-                                  message_id
-                                  disable_notification))
-
-  (wrap-api-method sendPhoto(chat_id
-                             photo
-                             caption
+  (wrap-api-method sendMessage
+                   (required chat_id
+                             text)
+                   (optional parse_mode
+                             disable_web_page_preview
                              disable_notification
                              reply_to_message_id
                              reply_markup))
 
-  (wrap-api-method sendAudio(chat_id
-                             audio
-                             duration
+  (wrap-api-method forwardMessage
+                   (required chat_id
+                             from_chat_id
+                             message_id)
+                   (optional disable_notification))
+
+  (wrap-api-method sendPhoto
+                   (required chat_id
+                             photo)
+                   (optional caption
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
+  (wrap-api-method sendAudio
+                   (required chat_id
+                             audio)
+                   (optional duration
                              performer
                              title
                              disable_notification
                              reply_to_message_id
                              reply_markup))
 
-  (wrap-api-method sendDocument(chat_id
-                                document
-                                caption
-                                disable_notification
-                                reply_to_message_id
-                                reply_markup))
+  (wrap-api-method sendDocument
+                   (required chat_id
+                             document)
+                   (optional caption
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
 
-  (wrap-api-method sendSticker(chat_id
-                               sticker
-                               disable_notification
-                               reply_to_message_id
-                               reply_markup))
+  (wrap-api-method sendSticker
+                   (required chat_id
+                             sticker)
+                   (optional disable_notification
+                             reply_to_message_id
+                             reply_markup))
 
-  (wrap-api-method sendVideo(chat_id
-                             video
-                             duration
+  (wrap-api-method sendVideo
+                   (required chat_id
+                             video)
+                   (optional duration
                              width
                              height
                              caption
@@ -107,27 +121,35 @@
                              reply_to_message_id
                              reply_markup))
 
-  (wrap-api-method sendVoice(chat_id
-                             voice
-                             duration
+  (wrap-api-method sendVoice
+                   (required chat_id
+                             voice)
+                   (optional duration
                              disable_notification
                              reply_to_message_id
                              reply_markup))
 
-  (wrap-api-method sendLocation(chat_id
-                                latitude
-                                longitude
-                                disable_notification
-                                reply_to_message_id
-                                reply_markup))
+  (wrap-api-method sendLocation
+                   (required chat_id
+                             latitude
+                             longitude)
+                   (optional disable_notification
+                             reply_to_message_id
+                             reply_markup))
 
-  (wrap-api-method sendChatAction(chat_id action))
+  (wrap-api-method sendChatAction
+                   (required chat_id
+                             action)
+                   (optional))
 
-  (wrap-api-method getUserProfilePhotos(user_id
-                                        offset
-                                        limit))
+  (wrap-api-method getUserProfilePhotos
+                   (required user_id)
+                   (optional offset
+                             limit))
 
-  (wrap-api-method getFile(file_id))
+  (wrap-api-method getFile
+                   (required file_id)
+                   (optional))
 
   ;;; framework
 
