@@ -60,7 +60,9 @@
 
   (wrap-api-method getUpdates
                    (required)
-                   (optional offset limit timeout))
+                   (optional offset
+                             limit
+                             timeout))
 
   (wrap-api-method sendMessage
                    (required chat_id
