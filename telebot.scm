@@ -20,6 +20,7 @@
   (use medea)
   (use loops)
   (use vector-lib)
+  (use data-structures)
 
   (define-constant api-base "https://api.telegram.org/bot")
 
@@ -156,13 +157,13 @@
   ;;; framework
 
   (define (pollUpdates token handler)
-    (define offset  0)
-    (define process (lambda (i u)
-                      (begin (handler u)
-                             (set! offset (+ 1 (cdr (assv 'update_id u)))))))
-    (do-forever
-      (vector-for-each process
-                       (cdr (assv 'result (getUpdates token
-                                                      offset:  offset
-                                                      timeout: 60))))))
+    (let ((offset 0))
+      (do-forever
+        (vector-for-each (lambda (i u)
+                           (handler u)
+                           (set! offset (+ 1 (alist-ref 'update_id u))))
+                         (alist-ref 'result
+                                    (getUpdates token
+                                                offset:  offset
+                                                timeout: 60))))))
 )
