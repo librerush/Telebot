@@ -12,6 +12,7 @@
                  sendChatAction
                  getUserProfilePhotos
                  getFile
+                 answerInlineQuery
                  is-message?
                  is-inline_query?
                  is-chosen_inline_result?
@@ -156,6 +157,13 @@
   (wrap-api-method getFile
                    (required file_id)
                    (optional))
+
+  (wrap-api-method answerInlineQuery
+                   (required inline_query_id
+                             results)
+                   (optional cache_time
+                             is_personal
+                             next_offset))
 
   ;;; framework
 
