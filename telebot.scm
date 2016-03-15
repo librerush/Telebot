@@ -12,6 +12,9 @@
                  sendChatAction
                  getUserProfilePhotos
                  getFile
+                 is-message?
+                 is-inline_query?
+                 is-chosen_inline_result?
                  pollUpdates)
   (import chicken scheme)
   (use srfi-1)
@@ -155,6 +158,14 @@
                    (optional))
 
   ;;; framework
+
+  (define (update-predicate type)
+    (lambda (update)
+      (not (equal? #f (alist-ref type update)))))
+
+  (define is-message?              (update-predicate 'message))
+  (define is-inline_query?         (update-predicate 'inline_query))
+  (define is-chosen_inline_result? (update-predicate 'chosen_inline_result))
 
   (define (pollUpdates token handler)
     (let ((offset 0))

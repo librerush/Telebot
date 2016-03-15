@@ -27,5 +27,6 @@
 
 (telebot:pollUpdates token
                      (lambda (u)
-                       (begin (print-message u)
-                              (echo-message  u))))
+                       (if (telebot:is-message? u)
+                         (begin (print-message u)
+                                (echo-message  u)))))
