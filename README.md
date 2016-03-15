@@ -27,6 +27,8 @@ The only non-API wrapper provided by this library is `pollUpdates` which enables
 
 `example/echo.scm` implements a bot that echoes all messages back to their sender.
 
+`example/guess.scm` implements a simple number guessing game.
+
 ## Dependencies
 
 * [openssl](http://wiki.call-cc.org/eggref/4/openssl)
