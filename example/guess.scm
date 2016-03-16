@@ -22,6 +22,8 @@
 (define (make-conversation chat_id)
   (let ((chat_id chat_id)
         (answer  (random 100)))
+    (send chat_id
+          "Hi there! I just generated a random number for you to guess!")
     (lambda (text)
       (let ((guess (string->number text)))
         (if (number? guess)
@@ -39,11 +41,9 @@
     (print chat_id " -> \"" text "\"")
     (if (hash-table-exists? conversations chat_id)
       ((hash-table-ref conversations chat_id) text)
-      (begin (hash-table-set! conversations
-                              chat_id
-                              (make-conversation chat_id))
-             (send chat_id
-                   "Hi there! I just generated a random number for you to guess!")))))
+      (hash-table-set! conversations
+                       chat_id
+                       (make-conversation chat_id)))))
 
 (randomize)
 (telebot:pollUpdates token
