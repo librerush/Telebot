@@ -25,8 +25,8 @@
                          chat_id: chat_id
                          text:    text)))
 
-(telebot:pollUpdates token
-                     (lambda (u)
-                       (if (telebot:is-message? u)
-                         (begin (print-message u)
-                                (echo-message  u)))))
+(telebot:poll-updates token
+                      (lambda (u)
+                        (if (telebot:is-message? u)
+                          (begin (print-message u)
+                                 (echo-message  u)))))

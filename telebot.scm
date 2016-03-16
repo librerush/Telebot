@@ -1,4 +1,5 @@
-(module telebot (getMe
+(module telebot (;;; basic API wrappers
+                 getMe
                  getUpdates
                  sendMessage
                  forwardMessage
@@ -13,18 +14,21 @@
                  getUserProfilePhotos
                  getFile
                  answerInlineQuery
+                 ;;; framework
                  is-message?
                  is-inline_query?
                  is-chosen_inline_result?
-                 pollUpdates)
+                 poll-updates
+                 make-conversation-manager)
   (import chicken scheme)
-  (use srfi-1)
-  (use openssl)
-  (use http-client)
-  (use medea)
+  (use srfi-1
+       srfi-69)
+  (use openssl
+       http-client)
+  (use medea
+       vector-lib
+       data-structures)
   (use loops)
-  (use vector-lib)
-  (use data-structures)
 
   (define-constant api-base "https://api.telegram.org/bot")
 
@@ -39,6 +43,11 @@
       (if (null-list? cleaned-parameters)
         #f
         cleaned-parameters)))
+
+  (define (resolve-query query tree)
+    (fold (lambda (x y) (alist-ref x y))
+          tree
+          query))
 
   ;;; plain API wrappers, returning deserialized JSON
 
@@ -175,7 +184,7 @@
   (define is-inline_query?         (update-predicate 'inline_query))
   (define is-chosen_inline_result? (update-predicate 'chosen_inline_result))
 
-  (define (pollUpdates token handler)
+  (define (poll-updates token handler)
     (let ((offset 0))
       (do-forever
         (vector-for-each (lambda (i u)
@@ -185,4 +194,16 @@
                                     (getUpdates token
                                                 offset:  offset
                                                 timeout: 60))))))
+
+  (define (make-conversation-manager token make-handler)
+    (let ((token         token)
+          (conversations (make-hash-table)))
+      (lambda (update)
+        (if (is-message? update)
+          (let ((chat_id (resolve-query '(message from id) update)))
+            (if (hash-table-exists? conversations chat_id)
+              ((hash-table-ref conversations chat_id) update)
+              (hash-table-set! conversations
+                               chat_id
+                               (make-handler token chat_id))))))))
 )
