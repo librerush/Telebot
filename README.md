@@ -33,6 +33,28 @@ One framework function provided by this library is `poll-updates` which enables 
 
 The common pattern of managing user specific conversations is supported via `make-conversation-manager`. This procedure instantiates a closure to be passed to e.g. `poll-updates` using a given token and _conversation handler_. All updates are then automatically distributed to an appropriate _conversation handler_ that may in turn be a closure maintaining conversation-specific state. `example/guess.scm` implements a practical bot based on this pattern.
 
+### Implemented API methods
+
+Based on the official [documentation](https://core.telegram.org/bots/api#available-methods).
+
+* getMe
+* getUpdates
+* sendMessage
+* forwardMessage
+* sendPhoto
+* sendAudio
+* sendDocument
+* sendSticker
+* sendVideo
+* sendVoice
+* sendLocation
+* sendChatAction
+* getUserProfilePhotos
+* getFile
+* answerInlineQuery
+
+The only missing method is `setWebhook` as this kind of interfacing with _Telegram_ is currently out of scope of this library. Should this be required an appropriate wrapper may be easily generated using the `wrap-api-method` macro described by the module.
+
 ## Build
 
 	git clone https://github.com/KnairdA/Telebot.git
