@@ -1,10 +1,18 @@
 # Telebot
 
-... is a basic _Chicken Scheme_ module to ease the development of Bots interfacing with the [Telegram Bot API](https://core.telegram.org/bots/api).
+... is a basic _Chicken Scheme_ module to ease the development of bots interfacing with the [Telegram Bot API](https://core.telegram.org/bots/api).
 
-In this context _basic_ means that the module currently consists of barely more than raw HTTP API calls hidden behind analogously named functions and JSON deserialization provided by the _http-client_ respectively _medea_ eggs.
+In this context _basic_ means that the module currently consists primarily of raw HTTP API calls hidden behind analogously named functions and JSON deserialization provided by the _http-client_ respectively _medea_ eggs.
 
 The maintanance of these API wrappers is simplified by an appropriate _Scheme_ macro that reduces the implementation of new API methods to basically slightly rewriting the documentation.
+
+To simplify the implementation of bots a set of framework functions implementing common usage patterns is provided.
+
+## Example
+
+`example/echo.scm` implements a bot that echoes all messages back to their sender.
+
+`example/guess.scm` implements a simple number guessing game.
 
 ## Documentation
 
@@ -16,18 +24,20 @@ All _basic_ API wrappers are named the same as their method name and require the
 
 All API wrappers return the raw deserialized JSON results as to not limit the options for further parsing unnecessarily.
 
-The only non-API wrapper provided by this library is `pollUpdates` which enables passing updates acquired via long polling of `getUpdates` to an arbitrary function as follows:
+One framework function provided by this library is `poll-updates` which enables passing updates acquired via long polling of `getUpdates` to an arbitrary function as follows:
 
-	(pollUpdates token
-	             (lambda (u)
-	               (begin (print-message u)
-	                      (echo-message  u))))
+	(poll-updates token
+	              (lambda (u)
+	                (begin (print-message u)
+	                       (echo-message  u))))
 
-## Example
+The common pattern of managing user specific conversations is supported via `make-conversation-manager`. This procedure instantiates a closure to be passed to e.g. `poll-updates` using a given token and _conversation handler_. All updates are then automatically distributed to an appropriate _conversation handler_ that may in turn be a closure maintaining conversation-specific state. `example/guess.scm` implements a practical bot based on this pattern.
 
-`example/echo.scm` implements a bot that echoes all messages back to their sender.
+## Build
 
-`example/guess.scm` implements a simple number guessing game.
+	git clone https://github.com/KnairdA/Telebot.git
+	cd Telebot
+	chicken-install -s
 
 ## Dependencies
 
