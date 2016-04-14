@@ -48,9 +48,17 @@ Based on the official [documentation](https://core.telegram.org/bots/api#availab
 * sendVideo
 * sendVoice
 * sendLocation
+* sendVenue
+* sendContact
 * sendChatAction
 * getUserProfilePhotos
 * getFile
+* kickChatMember
+* unbanChatMember
+* answerCallbackQuery
+* editMessageText
+* editMessageCaption
+* editMessageReplyMarkup
 * answerInlineQuery
 
 The only missing method is `setWebhook` as this kind of interfacing with _Telegram_ is currently out of scope of this library. Should this be required an appropriate wrapper may be easily generated using the `wrap-api-method` macro described by the module.

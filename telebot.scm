@@ -10,9 +10,17 @@
                  sendVideo
                  sendVoice
                  sendLocation
+                 sendVenue
+                 sendContact
                  sendChatAction
                  getUserProfilePhotos
                  getFile
+                 kickChatMember
+                 unbanChatMember
+                 answerCallbackQuery
+                 editMessageText
+                 editMessageCaption
+                 editMessageReplyMarkup
                  answerInlineQuery
                  ;;; framework
                  is-message?
@@ -153,6 +161,26 @@
                              reply_to_message_id
                              reply_markup))
 
+  (wrap-api-method sendVenue
+                   (required chat_id
+                             latitude
+                             longitude
+                             title
+                             address)
+                   (optional foursquare_id
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
+  (wrap-api-method sendContact
+                   (required chat_id
+                             phone_number
+                             first_name)
+                   (optional last_name
+                             disable_notification
+                             reply_to_message_id
+                             reply_markup))
+
   (wrap-api-method sendChatAction
                    (required chat_id
                              action)
@@ -166,6 +194,45 @@
   (wrap-api-method getFile
                    (required file_id)
                    (optional))
+
+  (wrap-api-method kickChatMember
+                   (required chat_id
+                             user_id)
+                   (optional))
+
+  (wrap-api-method unbanChatMember
+                   (required chat_id
+                             user_id)
+                   (optional))
+
+  (wrap-api-method answerCallbackQuery
+                   (required callback_query_id)
+                   (optional text
+                             show_alert))
+
+  (wrap-api-method editMessageText
+                   (required text)
+                   (optional chat_id
+                             message_id
+                             inline_message_id
+                             parse_mode
+                             disable_web_page_preview
+                             reply_markup))
+
+  (wrap-api-method editMessageCaption
+                   (required)
+                   (optional chat_id
+                             message_id
+                             inline_message_id
+                             caption
+                             reply_markup))
+
+  (wrap-api-method editMessageReplyMarkup
+                   (required)
+                   (optional chat_id
+                             message_id
+                             inline_message_id
+                             reply_markup))
 
   (wrap-api-method answerInlineQuery
                    (required inline_query_id
