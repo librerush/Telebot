@@ -24,6 +24,7 @@
                  answerInlineQuery
                  ;;; framework
                  is-message?
+		 is-edited_message?
                  is-inline_query?
                  is-chosen_inline_result?
                  poll-updates
@@ -248,6 +249,7 @@
       (not (equal? #f (alist-ref type update)))))
 
   (define is-message?              (update-predicate 'message))
+  (define is-edited_message?       (update-predicate 'edited_message))
   (define is-inline_query?         (update-predicate 'inline_query))
   (define is-chosen_inline_result? (update-predicate 'chosen_inline_result))
 
