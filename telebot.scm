@@ -3,6 +3,7 @@
                  getUpdates
                  sendMessage
                  forwardMessage
+		 resolve-query
                  sendPhoto
                  sendAudio
                  sendDocument
