@@ -28,6 +28,8 @@
 		 is-edited_message?
                  is-inline_query?
                  is-chosen_inline_result?
+		 is-text?
+		 is-location?
                  poll-updates
                  make-conversation-manager)
   (import chicken scheme)
@@ -247,12 +249,15 @@
 
   (define (update-predicate type)
     (lambda (update)
-      (not (equal? #f (alist-ref type update)))))
+      (not (equal? #f (resolve-query type update)))))
 
-  (define is-message?              (update-predicate 'message))
-  (define is-edited_message?       (update-predicate 'edited_message))
-  (define is-inline_query?         (update-predicate 'inline_query))
-  (define is-chosen_inline_result? (update-predicate 'chosen_inline_result))
+  (define is-message?              (update-predicate '(message)))
+  (define is-edited_message?       (update-predicate '(edited_message)))
+  (define is-inline_query?         (update-predicate '(inline_query)))
+  (define is-chosen_inline_result? (update-predicate '(chosen_inline_result)))
+
+  (define is-text?                 (update-predicate '(message text)))
+  (define is-location?             (update-predicate '(message location)))
 
   (define (poll-updates token handler)
     (let ((offset 0))
