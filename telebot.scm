@@ -57,7 +57,7 @@
         cleaned-parameters)))
 
   (define (resolve-query query tree)
-    (fold (lambda (x y) (alist-ref x y))
+    (fold (lambda (x y) (alist-ref x y eqv? '()))
           tree
           query))
 
@@ -246,18 +246,20 @@
                              next_offset))
 
   ;;; framework
+  (define (is-update-type? type update)
+    (not (equal? '() (resolve-query type update))))
 
-  (define (update-predicate type)
+  (define (update-predicate types)
     (lambda (update)
-      (not (equal? #f (resolve-query type update)))))
+      (any (lambda (type) (is-update-type? type update)) types)))
 
-  (define is-message?              (update-predicate '(message)))
-  (define is-edited_message?       (update-predicate '(edited_message)))
-  (define is-inline_query?         (update-predicate '(inline_query)))
-  (define is-chosen_inline_result? (update-predicate '(chosen_inline_result)))
+  (define is-message?              (update-predicate '((message) (edited_message)) ))
+  (define is-edited_message?       (update-predicate '((edited_message)) ))
+  (define is-inline_query?         (update-predicate '((inline_query)) ))
+  (define is-chosen_inline_result? (update-predicate '((chosen_inline_result)) ))
 
-  (define is-text?                 (update-predicate '(message text)))
-  (define is-location?             (update-predicate '(message location)))
+  (define is-text?                 (update-predicate '((message text) (edited_message text)) ))
+  (define is-location?             (update-predicate '((message location) (edited_message location)) ))
 
   (define (poll-updates token handler)
     (let ((offset 0))
