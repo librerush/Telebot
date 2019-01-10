@@ -32,15 +32,15 @@
 		 is-location?
                  poll-updates
                  make-conversation-manager)
-  (import chicken scheme)
-  (use srfi-1
-       srfi-69)
-  (use openssl
-       http-client)
-  (use medea
-       vector-lib
-       data-structures)
-  (use loops)
+  
+  (import scheme (chicken base)
+	         (chicken condition))
+  (import srfi-1
+          srfi-69)
+  (import openssl
+          http-client)
+  (import medea
+          vector-lib)
 
   (define-constant api-base "https://api.telegram.org/bot")
 
@@ -263,14 +263,16 @@
 
   (define (poll-updates token handler)
     (let ((offset 0))
-      (do-forever
+      (let loop ()
         (vector-for-each (lambda (i u)
                            (handler u)
                            (set! offset (+ 1 (alist-ref 'update_id u))))
                          (alist-ref 'result
                                     (getUpdates token
                                                 offset:  offset
-                                                timeout: 60))))))
+                                                timeout: 60)))
+	
+	(loop))))
 
   (define (make-conversation-manager token make-handler)
     (let ((token         token)

@@ -1,0 +1,14 @@
+((license "MIT")
+ (category web)
+
+ (dependencies srfi-1
+               srfi-69
+               openssl
+               http-client
+               medea
+               vector-lib)
+
+ (author   "Adrian Kummerländer")
+ (synopsis "Basic wrapper of the Telegram Bot API.")
+ (version "1.0")
+ (components (extension telebot)))
