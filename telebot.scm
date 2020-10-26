@@ -1,40 +1,42 @@
-(module telebot (;;; basic API wrappers
-                 getMe
-                 getUpdates
-                 sendMessage
-                 forwardMessage
-		 resolve-query
-                 sendPhoto
-                 sendAudio
-                 sendDocument
-                 sendSticker
-                 sendVideo
-                 sendVoice
-                 sendLocation
-                 sendVenue
-                 sendContact
-                 sendChatAction
-                 getUserProfilePhotos
-                 getFile
-                 kickChatMember
-                 unbanChatMember
-                 answerCallbackQuery
-                 editMessageText
-                 editMessageCaption
-                 editMessageReplyMarkup
-                 answerInlineQuery
-                 ;;; framework
-                 is-message?
-		 is-edited_message?
-                 is-inline_query?
-		 is-callback_query?
-                 is-chosen_inline_result?
-		 is-text?
-		 is-location?
-                 poll-updates
-                 make-conversation-manager)
-
-  (import scheme (chicken base)
+(module telebot
+    (;;; basic API wrappers
+     getMe
+     getUpdates
+     sendMessage
+     forwardMessage
+     resolve-query
+     sendPhoto
+     sendAudio
+     sendDocument
+     sendSticker
+     sendVideo
+     sendVoice
+     sendLocation
+     sendVenue
+     sendContact
+     sendChatAction
+     getUserProfilePhotos
+     getFile
+     kickChatMember
+     unbanChatMember
+     answerCallbackQuery
+     editMessageText
+     editMessageCaption
+     editMessageReplyMarkup
+     answerInlineQuery
+     ;;; framework
+     is-message?
+     is-edited_message?
+     is-inline_query?
+     is-callback_query?
+     is-chosen_inline_result?
+     is-text?
+     is-location?
+     poll-updates
+     make-conversation-manager)
+  
+  (import scheme
+          (chicken base)
           (chicken condition))
   (import srfi-1
           srfi-69)
@@ -276,9 +278,10 @@
                            (handler u)
                            (set! offset (+ 1 (alist-ref 'update_id u))))
                          (alist-ref 'result
-                                    (getUpdates token
-                                                offset:  offset
-                                                timeout: 60)))
+                                    (getUpdates
+                                     token
+                                     offset: offset
+                                     timeout: 60)))
 
 	(loop))))
 
