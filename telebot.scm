@@ -33,9 +33,9 @@
 		 is-location?
                  poll-updates
                  make-conversation-manager)
-  
+
   (import scheme (chicken base)
-	         (chicken condition))
+          (chicken condition))
   (import srfi-1
           srfi-69)
   (import openssl
@@ -54,8 +54,8 @@
     (let ((cleaned-parameters (remove (lambda (p) (equal? #f (cdr p)))
                                       parameters)))
       (if (null-list? cleaned-parameters)
-        #f
-        cleaned-parameters)))
+          #f
+          cleaned-parameters)))
 
   (define (resolve-query query tree)
     (fold (lambda (x y) (alist-ref x y eqv? '()))
@@ -66,22 +66,22 @@
 
   (define-syntax wrap-api-method
     (syntax-rules (required optional)
-    ((wrap-api-method method
-                      (required required_params ...)
-                      (optional optional_params ...))
-     (define (method token
-                     #!key required_params ...
-                           optional_params ...)
-       (if (any (lambda (x) (equal? #f x))
-                (list required_params ...))
-         (abort 'required-parameter-missing)
-         (with-input-from-request
-           (get-query-url token (symbol->string 'method))
-           (clean-query-parameters
-             (map (lambda (l) (cons (first l) (second l)))
-                  (zip '(required_params ... optional_params ...)
-                       (list required_params ... optional_params ...))))
-           read-json))))))
+      ((wrap-api-method method
+                        (required required_params ...)
+                        (optional optional_params ...))
+       (define (method token
+                       #!key required_params ...
+                       optional_params ...)
+         (if (any (lambda (x) (equal? #f x))
+                  (list required_params ...))
+             (abort 'required-parameter-missing)
+             (with-input-from-request
+              (get-query-url token (symbol->string 'method))
+              (clean-query-parameters
+               (map (lambda (l) (cons (first l) (second l)))
+                    (zip '(required_params ... optional_params ...)
+                         (list required_params ... optional_params ...))))
+              read-json))))))
 
   (wrap-api-method getMe (required) (optional))
 
@@ -254,14 +254,20 @@
     (lambda (update)
       (any (lambda (type) (is-update-type? type update)) types)))
 
-  (define is-message?              (update-predicate '((message) (edited_message)) ))
-  (define is-edited_message?       (update-predicate '((edited_message)) ))
-  (define is-inline_query?         (update-predicate '((inline_query)) ))
-  (define is-callback_query?       (update-predicate '((callback_query)) ))
-  (define is-chosen_inline_result? (update-predicate '((chosen_inline_result)) ))
-
-  (define is-text?                 (update-predicate '((message text) (edited_message text)) ))
-  (define is-location?             (update-predicate '((message location) (edited_message location)) ))
+  (define is-message?
+    (update-predicate '((message) (edited_message))))
+  (define is-edited_message?
+    (update-predicate '((edited_message))))
+  (define is-inline_query?
+    (update-predicate '((inline_query))))
+  (define is-callback_query?
+    (update-predicate '((callback_query))))
+  (define is-chosen_inline_result?
+    (update-predicate '((chosen_inline_result))))
+  (define is-text?
+    (update-predicate '((message text) (edited_message text))))
+  (define is-location?
+    (update-predicate '((message location) (edited_message location))))
 
   (define (poll-updates token handler)
     (let ((offset 0))
@@ -273,18 +279,18 @@
                                     (getUpdates token
                                                 offset:  offset
                                                 timeout: 60)))
-	
+
 	(loop))))
 
   (define (make-conversation-manager token make-handler)
-    (let ((token         token)
+    (let ((token token)
           (conversations (make-hash-table)))
       (lambda (update)
         (if (is-message? update)
-          (let ((chat_id (resolve-query '(message from id) update)))
-            (if (hash-table-exists? conversations chat_id)
-              ((hash-table-ref conversations chat_id) update)
-              (hash-table-set! conversations
-                               chat_id
-                               (make-handler token chat_id))))))))
+            (let ((chat_id (resolve-query '(message from id) update)))
+              (if (hash-table-exists? conversations chat_id)
+                  ((hash-table-ref conversations chat_id) update)
+                  (hash-table-set! conversations
+                                   chat_id
+                                   (make-handler token chat_id))))))))
 )

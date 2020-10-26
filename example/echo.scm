@@ -1,12 +1,8 @@
 (require-extension telebot
                    (prefix telebot telebot:))
 
-(use data-structures)
-
-(define (resolve-query query tree)
-  (fold (lambda (x y) (alist-ref x y))
-        tree
-        query))
+(import (chicken process-context))
+(import (srfi 1))
 
 (define token (car (command-line-arguments)))
 
@@ -19,14 +15,14 @@
          ")"))
 
 (define (echo-message msg)
-  (let ((chat_id    (resolve-query '(message from id) msg))
-        (text       (resolve-query '(message text)    msg)))
+  (let ((chat_id (resolve-query '(message from id) msg))
+        (text (resolve-query '(message text) msg)))
     (telebot:sendMessage token
                          chat_id: chat_id
-                         text:    text)))
+                         text: text)))
 
 (telebot:poll-updates token
                       (lambda (u)
                         (if (telebot:is-message? u)
-                          (begin (print-message u)
-                                 (echo-message  u)))))
+                            (begin (print-message u)
+                                   (echo-message  u)))))
