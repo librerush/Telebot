@@ -6,7 +6,8 @@
                openssl
                http-client
                medea
-               vector-lib)
+               vector-lib
+               r7rs)
 
  (author   "Adrian Kummerländer")
  (synopsis "Basic wrapper of the Telegram Bot API.")
